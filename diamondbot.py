@@ -12,12 +12,18 @@ goal_position: tuple = ()
 
 
 def cmd_line():
-    parser = argparse.ArgumentParser(description='Jeu de labyrinthe')
-    parser.add_argument('-i', '--init', help="Etat initial", type=str)
-    parser.add_argument('-g', '--goal', help="Etat final", type=str)
-    parser.add_argument('-l', '--list', help='Liste des algos ',
+    parser = argparse.ArgumentParser(description='DiamondBot un jeu dont l\'\
+        objectif est de faire déplacer le smiley vers le diamant.\n')
+    parser.add_argument('-n', '--num', help='Numéro de l\'algorithme avec '
+                                            'lequel on veut résoudre '
+                                            'le problème', type=int)
+    parser.add_argument('-i', '--init', help="Etat initial montrant la position"
+                                             "du smiley", type=str)
+    parser.add_argument('-g', '--goal', help="Etat final montrant la "
+                                             "postion du diamant", type=str)
+    parser.add_argument('-l', '--list', help='Liste des algorithmes implémentés '
+                                             '',
                         action='store_true')
-    parser.add_argument('-n', '--num', help='Numéro de l\'algo', type=int)
     return parser.parse_args()
 
 
