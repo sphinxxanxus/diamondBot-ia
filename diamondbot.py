@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+
+"""\033[34m correspond à la couleur bleu dans le terminal en python.
+\033[31m correspond à la couleur rouge dans le terminal"""
 import argparse
 from threading import Thread
 import os
@@ -14,15 +17,20 @@ goal_position: tuple = ()
 def cmd_line():
     parser = argparse.ArgumentParser(description='DiamondBot un jeu dont l\'\
         objectif est de faire déplacer le smiley vers le diamant.\n')
-    parser.add_argument('-n', '--num', help='Numéro de l\'algorithme avec '
-                                            'lequel on veut résoudre '
-                                            'le problème', type=int)
-    parser.add_argument('-i', '--init', help="Etat initial montrant la position"
-                                             "du smiley", type=str)
-    parser.add_argument('-g', '--goal', help="Etat final montrant la "
-                                             "postion du diamant", type=str)
-    parser.add_argument('-l', '--list', help='Liste des algorithmes implémentés '
-                                             '',
+    parser.add_argument('-n', '--num',
+                        help='Numéro de l\'algorithme avec lequel '
+                             'on veut résoudre le problème', type=int)
+    parser.add_argument('-i', '--init',
+                        help="Etat initial montrant la position "
+                             "du smiley", type=str)
+    parser.add_argument('-g', '--goal',
+                        help="Etat final montrant la "
+                             "position du diamant", type=str)
+    parser.add_argument('-l', '--list',
+                        help='Liste des algorithmes implémentés ',
+                        action='store_true')
+    parser.add_argument('-v', '--verbose',
+                        help='Affiche les états jusqu\'à la fin',
                         action='store_true')
     return parser.parse_args()
 
@@ -111,7 +119,8 @@ def run_algo() -> None:
         else:
             node = algo[args.num].func(problem)
     except KeyError:
-        print('Aucun algo ne correspond à ce numéro',flush=True)
+        print('\033[1,31mAucun algo ne correspond à ce numéro\033[0;m',
+              flush=True)
         os._exit(-1)
 
     end_time: float = clock()  # Fin
@@ -120,17 +129,41 @@ def run_algo() -> None:
     path.reverse()  # Retourne la liste
     nb_step: int = 0  # Nombre d'action effectué pour atteindre le goal
     path_cost: int = 0
-    for n in path:
-        # print(n.state)
-        path_cost = n.path_cost
-        nb_step += 1
-    # print(State(goal_grid))  # Affiche la grille finale
-    print("| " + str(args.init).ljust(15) + " | "
-          + str(algo[args.num].label).ljust(20)
-          + " | " + str(path_cost).ljust(5) + " | "
-          + "{0:.18f}".format(end_time - start_time).ljust(10)
-          + " | " + str(problem.nb_explored_node).ljust(5)
-          + " | " + str(nb_step).ljust(5) + " | ", flush=True)
+
+    if args.verbose:  # affiche les détails lorsque cette option est ajoutée
+        for n in path:
+            print(n.state)
+            path_cost = n.path_cost
+            nb_step += 1
+        print(State(goal_grid))  # Affiche la grille finale
+
+        print('\033[1;34m Postion initiale du smiley: ' +
+              str(initial_state.position_robot) +
+              '\033[0;m', flush=True)  # Position initial du smiley
+        print('\033[1;34m Postion du diamant: '
+              + str(goal_position) + '\033[0;m', flush=True)
+        # Algorithme utilisé
+        print('\033[1;34m Algorithme: '
+              + str(algo[args.num].label) + '\033[0;m', flush=True)
+        # Coût de la solution trouvée
+        print('\033[1;34m Coût: ' + str(path_cost) + '\033[0;m', flush=True)
+        print('\033[1;34m Nombre de noeuds explorés: '
+              + str(problem.nb_explored_node) + '\033[0;m', flush=True)
+        print('\033[1;34m Nombre d\'actions: ' + str(nb_step)
+              + '\033[0;m', flush=True)  #  Nbre d'action
+
+    else:  # Affichage sans détail
+        for n in path:
+            path_cost = n.path_cost
+            nb_step += 1
+        print(
+            "| \033[1;34m" + str(args.init).ljust(15) + "\033[0;m | \033[1;34m"
+            + str(algo[args.num].label).ljust(20)
+            + "\033[0;m | \033[1;34m" + str(path_cost).ljust(5) + "\033[0;m | "
+            + "\033[1;34m" + "{0:.18f}".format(end_time - start_time).ljust(10)
+            + "\033[0;m | \033[1;34m" + str(problem.nb_explored_node).ljust(5)
+            + "\033[0;m | \033[1;34m" + str(nb_step).ljust(5) + "\033[0;m | ",
+            flush=True)
     os._exit(0)  # arrete le programme à la fin de cette fonction
 
 
@@ -152,12 +185,22 @@ class Threads(object):
     def timeout(self):  #  function qui gère l'arrêt
         while True:
             if clock() - self.start >= 4:  # condition d'arrêt
-                print("| " + str(args.init).ljust(15) + " | "
-                      + str(algo[args.num].label).ljust(20)
-                      + " | " + " - ".ljust(5) + " | "
-                      + "Infini".ljust(20)
-                      + " | " + " - ".ljust(5)
-                      + " | " + "- ".ljust(5) + " | ",flush=True)
+                if args.verbose:
+                    print("\033[1;31m Le délai d'attente est dépassé"
+                          " pour l'algorithme {} pour ce niveau \033[0;m ".
+                          format(str(algo[args.num].label)), flush=True)
+
+                else:
+                    print("| \033[1;31m" + str(args.init).ljust(15)
+                          + "\033[0;m | " + "\033[1;31m"
+                          + str(algo[args.num].label).ljust(20)
+                          + "\033[0;m"
+                          + " | \033[1;31m" + " -".ljust(5)
+                          + "\033[0;m | \033[1;31m"
+                          + " Time out ".ljust(20)
+                          + "\033[0;m | \033[1;31m" + " - ".ljust(5)
+                          + "\033[0;m | \033[1;31m" + " - ".ljust(5)
+                          + " \033[0;m| ", flush=True)
                 # os.system("echo {}".format(response))
                 os._exit(-1)  # Arrete le programme après le temps spécifié
 
@@ -168,12 +211,7 @@ if __name__ == '__main__':
         initial_grid: list = read_file(args.init)  # Récupération état initial
         goal_grid: list = read_file(args.goal)  # Récupération état final
         initial_state = State(initial_grid)  # Initialisation de l'état initial
-        # print(initial_state)  # Affiche la grille initiale
-        # print('Postion initiale du smiley: ' +
-        #      str(initial_state.position_robot))  # Position initial du smiley
-
         goal_position = get_diamant_position(goal_grid)  # Position du diamant
-        # print('Postion du diamant: ' + str(goal_position))
         problem = LabProblem(initial_state)  # Initialisation du problem
         problem.goal_position = goal_position  # Affectation du goal
         algo: dict = build_algo()  # Dict des algos {key:Algo}
