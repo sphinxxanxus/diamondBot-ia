@@ -1,11 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.7
 
 """\033[34m correspond à la couleur bleu dans le terminal en python.
 \033[31m correspond à la couleur rouge dans le terminal"""
 import argparse
 from threading import Thread
 import os
-from time import clock, sleep
+from time import process_time, sleep
 
 from labproblem import LabProblem
 from search import *
@@ -111,7 +111,7 @@ def build_algo() -> dict:
 def run_algo() -> None:
     """Function qui tourne l'algo choisi et affiche les résultat"""
     global node
-    start_time: float = clock()  # début
+    start_time: float = process_time()  # début
     try:
         if args.num in (1, 9, 10):
             node = algo[args.num].func(problem, heuristic)
@@ -124,7 +124,7 @@ def run_algo() -> None:
               flush=True)
         os._exit(-1)
 
-    end_time: float = clock()  # Fin
+    end_time: float = process_time()  # Fin
 
     path: list = node.path()  # Chemin trouver pour le goal
     path.reverse()  # Retourne la liste
@@ -150,6 +150,8 @@ def run_algo() -> None:
         print('\033[1;34m Coût: ' + str(path_cost) + '\033[0;m', flush=True)
         print('\033[1;34m Nombre de noeuds explorés: '
               + str(problem.nb_explored_node) + '\033[0;m', flush=True)
+        print('\033[1;34m Temps (s): ' + str(end_time - start_time)
+              + '\033[0;m', flush=True)  #  Nbre d'action
         print('\033[1;34m Nombre d\'actions: ' + str(nb_step)
               + '\033[0;m', flush=True)  #  Nbre d'action
 
@@ -170,7 +172,7 @@ def run_algo() -> None:
 
 class Threads(object):
     def __init__(self, func_run_algo):
-        self.start: float = clock()  # début de l'exécution
+        self.start: float = process_time()  # début de l'exécution
         self.run = func_run_algo
         # Config et démarrage du thread du run algo
         thread_algo = Thread(target=self.run, args=())
@@ -185,7 +187,7 @@ class Threads(object):
 
     def timeout(self):  #  function qui gère l'arrêt
         while True:
-            if clock() - self.start >= 10:  # condition d'arrêt
+            if process_time() - self.start >= 10:  # condition d'arrêt
                 if args.verbose:
                     print("\033[1;31m Le délai d'attente est dépassé"
                           " pour l'algorithme {} pour ce niveau \033[0;m ".
