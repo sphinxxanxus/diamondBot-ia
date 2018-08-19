@@ -129,8 +129,8 @@ def graph_search(problem, fringe):
         if node.state not in closed:
             if problem.goal_test(node.state):
                 return node
-                # closed[node.state] = True
-            closed.setdefault(node.state, True)
+            closed[node.state] = True
+            # closed.setdefault(node.state, True)
             fringe.extend(node.expand(problem))
     return None
 
@@ -197,6 +197,10 @@ def astar_graph_search(problem, h):
         return n.path_cost + h(n)
 
     return best_first_graph_search(problem, f)
+
+
+def greedy_best_first_graph_search(problem, h):
+    return best_first_graph_search(problem, h)
 
 
 # ____________________________________________________________________________
