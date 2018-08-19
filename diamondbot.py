@@ -98,11 +98,12 @@ def build_algo() -> dict:
         3: Algo(3, 'BFS Graph Search', breadth_first_graph_search),
         4: Algo(4, 'BFS  Tree Search',
                 breadth_first_tree_search),
-        5: Algo(5, 'DFS Graph Search', breadth_first_graph_search),
-        6: Algo(6, 'DFS Tree Search', breadth_first_tree_search),
+        5: Algo(5, 'DFS Graph Search', depth_first_graph_search),
+        6: Algo(6, 'DFS Tree Search', depth_first_tree_search),
         7: Algo(7, 'Depth Limited Search', depth_limited_search),
         8: Algo(8, 'IDS', iterative_deepening_search),
-        9: Algo(9, 'Best First Search', best_first_graph_search)
+        9: Algo(9, 'Best First Search', best_first_graph_search),
+        10: Algo(10, 'Greedy BF Search', greedy_best_first_graph_search)
     }
     return algo_list
 
@@ -112,7 +113,7 @@ def run_algo() -> None:
     global node
     start_time: float = clock()  # début
     try:
-        if args.num in (1, 9):
+        if args.num in (1, 9, 10):
             node = algo[args.num].func(problem, heuristic)
         elif args.num == 2:
             node = algo[args.num].func(problem, heuristic_ucs)
@@ -184,7 +185,7 @@ class Threads(object):
 
     def timeout(self):  #  function qui gère l'arrêt
         while True:
-            if clock() - self.start >= 4:  # condition d'arrêt
+            if clock() - self.start >= 10:  # condition d'arrêt
                 if args.verbose:
                     print("\033[1;31m Le délai d'attente est dépassé"
                           " pour l'algorithme {} pour ce niveau \033[0;m ".
