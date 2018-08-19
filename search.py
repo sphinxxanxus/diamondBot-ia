@@ -126,11 +126,10 @@ def graph_search(problem, fringe):
     fringe.append(Node(problem.initial))
     while fringe:
         node = fringe.pop()
+        if problem.goal_test(node.state):
+            return node
         if node.state not in closed:
-            if problem.goal_test(node.state):
-                return node
             closed[node.state] = True
-            # closed.setdefault(node.state, True)
             fringe.extend(node.expand(problem))
     return None
 
