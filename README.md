@@ -49,9 +49,9 @@ Le script **diamondbot.py** est en quelque sorte le main qui est exécuté:
 `python3 diamondbot.py -l`
 
 ## exécution d'un level
-`python3 diamondbot.py -n numero_de_l_algo -i etat_initial -g etat_final`
+`python3 diamondbot.py -n numero_de_l_algo -i etat_initial -g etat_final  -v`
 ### Exemple 
-`python3 diamondbot.py -n 1 -i benchs/labInst01.init -g benchs/labInst01.goal`
+`python3 diamondbot.py -v -n 1 -i benchs/labInst01.init -g benchs/labInst01.goal `
 exécute le premier algorithme qui est **Astar** sur le niveau 1 qui est dans le dossier **benchs**
 
 ## Utilisation de **run_all.sh**
@@ -68,7 +68,7 @@ Il sort un tableau contenant la liste des résulats des algorithmes par niveau
 `bash run_all.sh -p chemin_du_dossier`
 
 #### Exemple sur le dossier benchs
-`bas run_all.sh -p benchs`
+`bash run_all.sh -p benchs`
 
 
 # Perspective
