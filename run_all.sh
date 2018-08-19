@@ -55,7 +55,7 @@ while read line; do
 	((i++))
 done < <(ls -1 "$p"/*.goal) # subprocessing
 i=1
-while [[ $i -lt 10 ]]; do
+while [[ $i -lt 11 ]]; do
 	echo " _____________________________________________________________________________________________"
 
 	echo "| Niveaux               | Algorithme           | Coût  | Temps (s)            | Nb E  | Step  |"
